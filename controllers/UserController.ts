@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { validationResult } from "express-validator";
+import User from "../models/User";
 
-export const register = (
+export const register = async (
   req: Request<
     {},
     {},
@@ -9,11 +9,9 @@ export const register = (
   >,
   res: Response
 ) => {
-  const errors = validationResult(req);
+  // create new user in database
+  const newUser = await User.create(req.body);
 
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  res.json(req.body);
+  // response with new user
+  res.json(newUser);
 };

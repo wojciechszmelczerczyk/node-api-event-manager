@@ -2,7 +2,10 @@ import express, { Application } from "express";
 import { config } from "dotenv";
 import cors from "cors";
 import userRouter from "./routes/user";
+import { connection } from "./db/connection";
 config();
+
+connection(process.env.DB_URI);
 
 const app: Application = express();
 
