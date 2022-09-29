@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import User from "../models/User";
-import { sign } from "jsonwebtoken";
 import { createToken } from "../token/createToken";
 
 export const register = async (
@@ -11,11 +10,15 @@ export const register = async (
   >,
   res: Response
 ) => {
-  // create new user in database
-  const newUser = await User.create(req.body);
+  try {
+    // create new user in database
+    const newUser = await User.create(req.body);
 
-  // response with new user
-  res.json(newUser);
+    // response with new user
+    res.json(newUser);
+  } catch (e) {
+    res.status(400).send(e.message);
+  }
 };
 
 export const login = async (
@@ -33,6 +36,7 @@ export const login = async (
   const { firstName, lastName } = await User.login(email, password);
 
   // if user exist, sign access token and refresh token
+
   const accessToken = createToken(
     {
       email,
