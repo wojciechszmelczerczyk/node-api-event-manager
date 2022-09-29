@@ -1,8 +1,19 @@
-import { model, Schema } from "mongoose";
+import { Model, model, Schema } from "mongoose";
 import validator from "validator";
-import { genSalt, hash } from "bcrypt";
+import { genSalt, hash, compare } from "bcrypt";
 
-const userSchema = new Schema({
+interface IUser {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
+interface UserModel extends Model<IUser> {
+  login(email: string, password: string): IUser;
+}
+
+const userSchema = new Schema<IUser, UserModel>({
   firstName: {
     type: String,
     required: [true, "Please enter a first name"],
@@ -32,6 +43,23 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-const User = model("user", userSchema);
+userSchema.static("login", async function (email, password) {
+  // find user with passed email
+  const user = await this.findOne({
+    email,
+  });
+  // if exists compare passed password with one from the database
+  if (user) {
+    const auth = await compare(password, user.password);
+    // if passwords match return user, otherwise throw an error
+    if (auth) {
+      return user;
+    }
+    throw Error("Password is too short");
+  }
+  throw Error("Please enter a valid email");
+});
+
+const User = model<IUser, UserModel>("user", userSchema);
 
 export default User;
