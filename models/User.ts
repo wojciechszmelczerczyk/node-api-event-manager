@@ -44,6 +44,12 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.static("login", async function (email, password) {
+  if (!email) {
+    throw Error("Please enter an email");
+  } else if (!password) {
+    throw Error("Please enter a password");
+  }
+
   // find user with passed email
   const user = await this.findOne({
     email,
@@ -55,9 +61,9 @@ userSchema.static("login", async function (email, password) {
     if (auth) {
       return user;
     }
-    throw Error("Password is too short");
+    throw Error("Provide correct password. Password incorrect");
   }
-  throw Error("Please enter a valid email");
+  throw Error("Provide correct email. User with this email doesn't exist");
 });
 
 const User = model<IUser, UserModel>("user", userSchema);

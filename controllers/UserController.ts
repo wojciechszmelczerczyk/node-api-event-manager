@@ -29,34 +29,38 @@ export const login = async (
   >,
   res: Response
 ) => {
-  // intercept data from request
-  const { email, password } = req.body;
+  try {
+    // intercept data from request
+    const { email, password } = req.body;
 
-  // find user by email, if exists decode hashed password and compare with one from request
-  const { firstName, lastName } = await User.login(email, password);
+    // find user by email, if exists decode hashed password and compare with one from request
+    const { firstName, lastName } = await User.login(email, password);
 
-  // if user exist, sign access token and refresh token
+    // if user exist, sign access token and refresh token
 
-  const accessToken = createToken(
-    {
-      email,
-      firstName,
-      lastName,
-    },
-    process.env.AT_SECRET,
-    "15m"
-  );
+    const accessToken = createToken(
+      {
+        email,
+        firstName,
+        lastName,
+      },
+      process.env.AT_SECRET,
+      "15m"
+    );
 
-  const refreshToken = createToken(
-    {
-      email,
-      firstName,
-      lastName,
-    },
-    process.env.RT_SECRET,
-    "1y"
-  );
+    const refreshToken = createToken(
+      {
+        email,
+        firstName,
+        lastName,
+      },
+      process.env.RT_SECRET,
+      "1y"
+    );
 
-  // response with new user
-  res.json({ accessToken, refreshToken });
+    // response with at and rt
+    res.json({ accessToken, refreshToken });
+  } catch (e) {
+    res.status(400).send(e.message);
+  }
 };
