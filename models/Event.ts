@@ -5,6 +5,7 @@ interface IEvent {
   firstName: string;
   lastName: string;
   email: string;
+  eventTitle: String;
   eventDate: Date;
 }
 
@@ -22,6 +23,11 @@ const eventSchema = new Schema<IEvent>({
     required: [true, "Please enter an email"],
     lowercase: true,
     validate: [validator.isEmail, "Please enter a valid email"],
+  },
+
+  eventTitle: {
+    type: String,
+    required: true,
   },
 
   eventDate: {

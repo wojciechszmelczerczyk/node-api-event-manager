@@ -72,9 +72,10 @@ PORT=
 
 ### Event:
 
-| Endpoint        | Method | Authenticated | Action             |
-| :-------------- | :----: | :-----------: | :----------------- |
-| `/event/create` |  POST  |      \*       | Create a new event |
+| Endpoint        | Method | Authenticated | Action                            |
+| :-------------- | :----: | :-----------: | :-------------------------------- |
+| `/event`        |  GET   |      \*       | Return all events of current user |
+| `/event/create` |  POST  |      \*       | Create a new event                |
 
 ## JWT
 
