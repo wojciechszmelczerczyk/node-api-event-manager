@@ -17,7 +17,7 @@ afterAll(async () => {
 const app = createServer();
 
 describe("POST /user", () => {
-  it.only("when all credentials correct, should create user", async () => {
+  it("when all credentials correct, should create user", async () => {
     const newUser = await request(app).post("/user").send(users[0]);
 
     // find created user in database
@@ -52,5 +52,43 @@ describe("POST /user", () => {
     expect(errData.text).toBe(
       "user validation failed: password: Password is too short. Minimum length is 6 characters"
     );
+  });
+});
+
+describe("POST /user/authenticate", () => {
+  it("when provided user credentials match with user from db, should return access token and refresh token", async () => {
+    const { body } = await request(app)
+      .post("/user/authenticate")
+      .send(users[0]);
+    expect(body.accessToken && body.refreshToken).toBeTruthy();
+  });
+
+  it("when email doesn't match email regex, should return an error message", async () => {
+    const errData = await request(app)
+      .post("/user/authenticate")
+      .send(users[1]);
+
+    expect(errData.error).toBeTruthy();
+    expect(errData.text).toBe(
+      "Provide correct email. User with this email doesn't exist"
+    );
+  });
+
+  it("when no email provided, should return an error message", async () => {
+    const errData = await request(app)
+      .post("/user/authenticate")
+      .send(users[2]);
+
+    expect(errData.error).toBeTruthy();
+    expect(errData.text).toBe("Please enter an email");
+  });
+
+  it("when provided password is incorrect, should return an error message", async () => {
+    const errData = await request(app)
+      .post("/user/authenticate")
+      .send(users[3]);
+
+    expect(errData.error).toBeTruthy();
+    expect(errData.text).toBe("Provide correct password. Password incorrect");
   });
 });

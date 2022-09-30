@@ -181,3 +181,59 @@ it("when provided password is shorter than 6, should return an error message", a
 ```
 
 </details>
+
+#### `POST /user/authenticate`
+
+<details>
+<summary>when provided user credentials match with user from db, return access token and refresh token</summary>
+ 
+ ```javascript
+ it("when provided user credentials match with user from db, return access token and refresh token", async () => {
+    const { body } = await request(app)
+      .post("/user/authenticate")
+      .send(users[0]);
+    expect(body.accessToken && body.refreshToken).toBeTruthy();
+  });
+  ```
+</details>
+<details>
+<summary>when email doesn't match email regex, should return an error message</summary>
+
+```javascript
+it("when email doesn't match email regex, should return an error message", async () => {
+  const errData = await request(app).post("/user/authenticate").send(users[1]);
+
+  expect(errData.error).toBeTruthy();
+  expect(errData.text).toBe(
+    "Provide correct email. User with this email doesn't exist"
+  );
+});
+```
+
+</details>
+<details>
+<summary>when no email provided, should return an error message</summary>
+
+```javascript
+it("when no email provided, should return an error message", async () => {
+  const errData = await request(app).post("/user/authenticate").send(users[2]);
+
+  expect(errData.error).toBeTruthy();
+  expect(errData.text).toBe("Please enter an email");
+});
+```
+
+</details>
+<details>
+<summary>when provided password is incorrect, should return an error message</summary>
+
+```javascript
+it("when provided password is incorrect, should return an error message", async () => {
+  const errData = await request(app).post("/user/authenticate").send(users[3]);
+
+  expect(errData.error).toBeTruthy();
+  expect(errData.text).toBe("Provide correct password. Password incorrect");
+});
+```
+
+</details>
