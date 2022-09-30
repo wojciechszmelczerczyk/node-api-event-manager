@@ -70,6 +70,12 @@ PORT=
 | `/user`              |  POST  |       -       | Create a new user                                        |
 | `/user/authenticate` |  POST  |       -       | Authenticate user, return access token and refresh token |
 
+### Event:
+
+| Endpoint        | Method | Authenticated | Action             |
+| :-------------- | :----: | :-----------: | :----------------- |
+| `/event/create` |  POST  |      \*       | Create a new event |
+
 ## JWT
 
 ### Token implementation

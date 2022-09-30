@@ -1,6 +1,9 @@
 import userRouter from "../routes/user";
+import eventRouter from "../routes/event";
+
 import cors from "cors";
 import express, { Application } from "express";
+import verifyToken from "../middleware/verifyToken";
 
 const createServer = (): Application => {
   const app: Application = express();
@@ -14,7 +17,14 @@ const createServer = (): Application => {
     })
   );
 
+  app.use(
+    verifyToken.unless({
+      path: [{ url: "/user", method: "POST" }, "/user/authenticate"],
+    })
+  );
+
   app.use("/user", userRouter);
+  app.use("/event", eventRouter);
 
   return app;
 };
