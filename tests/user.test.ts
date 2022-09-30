@@ -1,6 +1,6 @@
 import request from "supertest";
 import createServer from "../utils/createServer";
-import users from "./data/user.json";
+import users from "./data/users.json";
 import { connection, disconnect } from "../db/connection";
 import { config } from "dotenv";
 import { flushLastDocument } from "./hooks/flushLastDocument";
@@ -16,11 +16,18 @@ afterAll(async () => {
 
 const app = createServer();
 
-describe("register", () => {
-  it("when all credentials correct, should create user", async () => {
+describe("POST /user", () => {
+  it.only("when all credentials correct, should create user", async () => {
     const newUser = await request(app).post("/user").send(users[0]);
+
+    // find created user in database
+    const userFromDb = await User.findById(newUser.body._id);
+
+    // if user credentials are correct, shouldn't be any error response back
     expect(newUser.error).not.toBeTruthy();
-    expect(2 + 2).toBe(4);
+
+    // user should exist
+    expect(userFromDb).toBeTruthy();
   });
 
   it("when email doesn't match email regex, should return an error message", async () => {
