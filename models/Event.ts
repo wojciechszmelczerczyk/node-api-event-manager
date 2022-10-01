@@ -34,11 +34,13 @@ const eventSchema = new Schema<IEvent>({
   startDate: {
     type: Date,
     required: true,
+    validate: [validator.isDate, "data is no a valid date type"],
   },
 
   endDate: {
     type: Date,
     required: true,
+    validate: [validator.isDate, "data is no a valid date type"],
   },
 });
 

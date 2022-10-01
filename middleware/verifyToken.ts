@@ -19,7 +19,9 @@ const verifyToken = (req, res, next) => {
     verify(at, process.env.AT_SECRET, async (error, user) => {
       if (error) {
         if (error.name === "TokenExpiredError") {
-          res.status(403);
+          res.status(403).send(error.message);
+        } else {
+          res.status(403).send(error.message);
         }
       } else {
         // assign decoded payload to request object

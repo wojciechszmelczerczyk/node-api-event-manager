@@ -1,0 +1,12 @@
+[
+    {
+        "eventTitle": "IT festival",
+        "startDate": "2022-10-01T18:00:00.000+00:00",
+        "endDate": "2022-10-01T20:00:00.000+00:00"
+    },
+    {
+        "eventTitle": "IT festival",
+        "startDate": "dummy start date",
+        "endDate": "2022-10-01T20:00:00.000+00:00"
+    }
+]

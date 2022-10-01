@@ -16,7 +16,7 @@ afterAll(async () => {
 
 const app = createServer();
 
-describe("POST /user", () => {
+describe.skip("POST /user", () => {
   it("when all credentials correct, should create user", async () => {
     const newUser = await request(app).post("/user").send(users[0]);
 
@@ -55,7 +55,7 @@ describe("POST /user", () => {
   });
 });
 
-describe("POST /user/authenticate", () => {
+describe.skip("POST /user/authenticate", () => {
   it("when provided user credentials match with user from db, should return access token and refresh token", async () => {
     const { body } = await request(app)
       .post("/user/authenticate")

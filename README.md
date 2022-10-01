@@ -59,6 +59,9 @@ DB_URI=
 # Port
 PORT=
 
+# Arbitrary jwt for testing purposes
+JWT=
+
 ```
 
 ## API endpoints
@@ -244,3 +247,9 @@ it("when provided password is incorrect, should return an error message", async 
 ```
 
 </details>
+
+### Event
+
+#### `POST /event/create`
+
+#### `GET /event`
