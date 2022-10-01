@@ -6,7 +6,8 @@ interface IEvent {
   lastName: string;
   email: string;
   eventTitle: String;
-  eventDate: Date;
+  startDate: Date;
+  endDate: Date;
 }
 
 const eventSchema = new Schema<IEvent>({
@@ -30,7 +31,12 @@ const eventSchema = new Schema<IEvent>({
     required: true,
   },
 
-  eventDate: {
+  startDate: {
+    type: Date,
+    required: true,
+  },
+
+  endDate: {
     type: Date,
     required: true,
   },

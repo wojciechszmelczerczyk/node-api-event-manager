@@ -18,7 +18,6 @@ const verifyToken = (req, res, next) => {
     // otherwise check if token expired
     verify(at, process.env.AT_SECRET, async (error, user) => {
       if (error) {
-        console.log(error.message);
         if (error.name === "TokenExpiredError") {
           res.status(403);
         }
