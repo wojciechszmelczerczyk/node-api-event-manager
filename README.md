@@ -62,6 +62,12 @@ PORT=
 # Arbitrary jwt for testing purposes
 JWT=
 
+# Arbitrary invalid jwt for testing purposes
+INVALID_JWT=
+
+# Arbitrary expired jwt for testing purposes
+EXPIRED_JWT=
+
 ```
 
 ## API endpoints
@@ -191,6 +197,7 @@ it("when provided password is shorter than 6, should return an error message", a
 ```
 
 </details>
+<br/>
 
 #### `POST /user/authenticate`
 
@@ -247,9 +254,94 @@ it("when provided password is incorrect, should return an error message", async 
 ```
 
 </details>
+<br/>
 
 ### Event
 
 #### `POST /event/create`
 
+<details>
+<summary>when jwt is verified and event data payload is correct, should create new event</summary>
+ 
+ ```javascript
+it("when jwt is verified and event data payload is correct, should create new event", async () => {
+    const newEvent = await request(app)
+      .post("/event/create")
+      .set("Authorization", `Bearer ${process.env.JWT}`)
+      .send(events[0]);
+
+    // event should exist
+    const eventExist = await Event.findById(newEvent.body.event);
+
+    expect(eventExist).toBeTruthy();
+
+});
+
+````
+</details>
+
+<details>
+<summary>when jwt is verified and event data payload is incorrect, should return error message</summary>
+
+ ```javascript
+it("when jwt is verified and event data payload is incorrect, should return error message", async () => {
+    const newEvent = await request(app)
+      .post("/event/create")
+      .set("Authorization", `Bearer ${process.env.JWT}`)
+      .send(events[1]);
+
+    expect(newEvent.error).toBeTruthy();
+  });
+````
+
+</details>
+
+<details>
+<summary>when jwt is invalid, should return error message</summary>
+
+```javascript
+it("when jwt is invalid, should return error message", async () => {
+  const newEvent = await request(app)
+    .post("/event/create")
+    .set("Authorization", `Bearer ${process.env.INVALID_JWT}`)
+    .send(events[1]);
+
+  expect(newEvent.text).toBe("jwt malformed");
+});
+```
+
+</details>
+
+<details>
+<summary>when jwt has expired, should return error message</summary>
+
+```javascript
+it("when jwt has expired, should return error message", async () => {
+  const newEvent = await request(app)
+    .post("/event/create")
+    .set("Authorization", `Bearer ${process.env.EXPIRED_JWT}`)
+    .send(events[1]);
+
+  expect(newEvent.text).toBe("jwt expired");
+});
+```
+
+</details>
+<br/>
+
 #### `GET /event`
+
+<details>
+<summary>when jwt correct, should return all current user events</summary>
+
+```javascript
+it("when jwt correct, should return all current user events", async () => {
+  const events = await request(app)
+    .get("/event")
+    .set("Authorization", `Bearer ${process.env.JWT}`);
+
+  expect(events.body).toBeTruthy();
+});
+```
+
+</details>
