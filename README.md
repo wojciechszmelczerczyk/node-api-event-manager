@@ -59,14 +59,21 @@ DB_URI=
 # Port
 PORT=
 
-# Arbitrary jwt for testing purposes
-JWT=
+# Arbitrary access token for testing purposes
+AT=
 
-# Arbitrary invalid jwt for testing purposes
-INVALID_JWT=
+# Arbitrary invalid access token for testing purposes
+INVALID_AT=
 
-# Arbitrary expired jwt for testing purposes
-EXPIRED_JWT=
+# Arbitrary expired access token for testing purposes
+EXPIRED_AT=
+
+# Arbitrary refresh token for testing purposes
+RT=
+
+# Arbitrary invalid refresh token for testing purposes
+INVALID_RT=
+
 
 ```
 
@@ -78,6 +85,7 @@ EXPIRED_JWT=
 | :------------------- | :----: | :-----------: | :------------------------------------------------------- |
 | `/user`              |  POST  |       -       | Create a new user                                        |
 | `/user/authenticate` |  POST  |       -       | Authenticate user, return access token and refresh token |
+| `/user/refreshToken` |  GET   |      \*       | Return new access token                                  |
 
 ### Event:
 
@@ -254,6 +262,53 @@ it("when provided password is incorrect, should return an error message", async 
 ```
 
 </details>
+<br />
+
+#### `POST /user/refreshToken`
+
+<details>
+<summary>when refresh token is verified, return new access token and refresh token</summary>
+
+```javascript
+it("when refresh token is verified, return new access token and refresh token", async () => {
+  const newTokens = await request(app)
+    .post("/user/authenticate")
+    .set("Authorization", `Bearer ${process.env.RT}`);
+
+  expect(newTokens).toBeTruthy();
+});
+```
+
+</details>
+
+<details>
+<summary>when refresh token is invalid, should return an error message</summary>
+
+```javascript
+it("when refresh token is invalid, should return an error message", async () => {
+  const err = await request(app)
+    .post("/user/authenticate")
+    .set("Authorization", `Bearer ${process.env.INVALID_RT}`);
+
+  expect(err).toBeTruthy();
+});
+```
+
+</details>
+
+<details>
+<summary>when refresh token doesn't exist, should return an error message</summary>
+
+```javascript
+it("when refresh token doesn't exist, should return an error message", async () => {
+  const err = await request(app).post("/user/authenticate");
+
+  expect(err).toBeTruthy();
+});
+```
+
+</details>
+
 <br/>
 
 ### Event

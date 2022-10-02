@@ -16,7 +16,7 @@ afterAll(async () => {
 
 const app = createServer();
 
-describe.skip("POST /user", () => {
+describe("POST /user", () => {
   it("when all credentials correct, should create user", async () => {
     const newUser = await request(app).post("/user").send(users[0]);
 
@@ -55,7 +55,7 @@ describe.skip("POST /user", () => {
   });
 });
 
-describe.skip("POST /user/authenticate", () => {
+describe("POST /user/authenticate", () => {
   it("when provided user credentials match with user from db, should return access token and refresh token", async () => {
     const { body } = await request(app)
       .post("/user/authenticate")
@@ -90,5 +90,29 @@ describe.skip("POST /user/authenticate", () => {
 
     expect(errData.error).toBeTruthy();
     expect(errData.text).toBe("Provide correct password. Password incorrect");
+  });
+});
+
+describe("POST /user/refreshToken", () => {
+  it("when refresh token is verified, should return new access token and refresh token", async () => {
+    const newTokens = await request(app)
+      .post("/user/authenticate")
+      .set("Authorization", `Bearer ${process.env.RT}`);
+
+    expect(newTokens).toBeTruthy();
+  });
+
+  it("when refresh token is invalid, should return an error message", async () => {
+    const err = await request(app)
+      .post("/user/authenticate")
+      .set("Authorization", `Bearer ${process.env.INVALID_RT}`);
+
+    expect(err).toBeTruthy();
+  });
+
+  it("when refresh token doesn't exist, should return an error message", async () => {
+    const err = await request(app).post("/user/authenticate");
+
+    expect(err).toBeTruthy();
   });
 });

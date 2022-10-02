@@ -32,7 +32,7 @@ describe("POST /event/create", () => {
   it("when jwt is verified and event data payload is incorrect, should return error message", async () => {
     const newEvent = await request(app)
       .post("/event/create")
-      .set("Authorization", `Bearer ${process.env.JWT}`)
+      .set("Authorization", `Bearer ${process.env.AT}`)
       .send(events[1]);
 
     expect(newEvent.error).toBeTruthy();
@@ -41,7 +41,7 @@ describe("POST /event/create", () => {
   it("when jwt is invalid, should return error message", async () => {
     const newEvent = await request(app)
       .post("/event/create")
-      .set("Authorization", `Bearer ${process.env.INVALID_JWT}`)
+      .set("Authorization", `Bearer ${process.env.INVALID_AT}`)
       .send(events[1]);
 
     expect(newEvent.text).toBe("jwt malformed");
@@ -50,7 +50,7 @@ describe("POST /event/create", () => {
   it("when jwt has expired, should return error message", async () => {
     const newEvent = await request(app)
       .post("/event/create")
-      .set("Authorization", `Bearer ${process.env.EXPIRED_JWT}`)
+      .set("Authorization", `Bearer ${process.env.EXPIRED_AT}`)
       .send(events[1]);
 
     expect(newEvent.text).toBe("jwt expired");
@@ -61,7 +61,7 @@ describe("GET /event", () => {
   it("when jwt correct, should return all user events", async () => {
     const events = await request(app)
       .get("/event")
-      .set("Authorization", `Bearer ${process.env.JWT}`);
+      .set("Authorization", `Bearer ${process.env.AT}`);
 
     expect(events.body).toBeTruthy();
   });

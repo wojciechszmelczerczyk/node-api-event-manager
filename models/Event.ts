@@ -28,18 +28,18 @@ const eventSchema = new Schema<IEvent>({
 
   eventTitle: {
     type: String,
-    required: true,
+    required: [true, "Event title has to be provided"],
   },
 
   startDate: {
     type: Date,
-    required: true,
+    required: [true, "Event start date has to be provided"],
     validate: [validator.isDate, "data is no a valid date type"],
   },
 
   endDate: {
     type: Date,
-    required: true,
+    required: [true, "Event end date has to be provided"],
     validate: [validator.isDate, "data is no a valid date type"],
   },
 });
