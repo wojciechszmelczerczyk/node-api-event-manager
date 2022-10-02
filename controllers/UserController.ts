@@ -1,15 +1,9 @@
 import { Request, Response } from "express";
+import { decode } from "jsonwebtoken";
 import User from "../models/User";
 import { createToken } from "../token/createToken";
 
-export const register = async (
-  req: Request<
-    {},
-    {},
-    { firstName: string; lastName: string; email: string; password: string }
-  >,
-  res: Response
-) => {
+export const register = async (req: Request, res: Response) => {
   try {
     // create new user in database
     const newUser = await User.create(req.body);
@@ -21,14 +15,7 @@ export const register = async (
   }
 };
 
-export const login = async (
-  req: Request<
-    {},
-    {},
-    { firstName: string; lastName: string; email: string; password: string }
-  >,
-  res: Response
-) => {
+export const login = async (req: Request, res: Response) => {
   try {
     // intercept data from request
     const { email, password } = req.body;
@@ -44,7 +31,7 @@ export const login = async (
         firstName,
         lastName,
       },
-      process.env.AT_SECRET,
+      process.env.SECRET,
       "15m"
     );
 
@@ -54,12 +41,43 @@ export const login = async (
         firstName,
         lastName,
       },
-      process.env.RT_SECRET,
+      process.env.SECRET,
       "1y"
     );
 
     // response with at and rt
     res.json({ accessToken, refreshToken });
+  } catch (e) {
+    res.status(400).send(e.message);
+  }
+};
+
+export const refreshToken = async (req: Request, res: Response) => {
+  try {
+    const { email, firstName, lastName } = req.user;
+
+    const newAccessToken = createToken(
+      {
+        email,
+        firstName,
+        lastName,
+      },
+      process.env.SECRET,
+      "15m"
+    );
+
+    const newRefreshToken = createToken(
+      {
+        email,
+        firstName,
+        lastName,
+      },
+      process.env.SECRET,
+      "1y"
+    );
+
+    // response with newt at and new rt
+    res.json({ newAccessToken, newRefreshToken });
   } catch (e) {
     res.status(400).send(e.message);
   }

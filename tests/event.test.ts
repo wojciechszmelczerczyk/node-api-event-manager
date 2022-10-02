@@ -20,7 +20,7 @@ describe("POST /event/create", () => {
   it("when jwt is verified and event data payload is correct, should create new event", async () => {
     const newEvent = await request(app)
       .post("/event/create")
-      .set("Authorization", `Bearer ${process.env.JWT}`)
+      .set("Authorization", `Bearer ${process.env.AT}`)
       .send(events[0]);
 
     // event should exist

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Node API for event managment app",
   "scripts": {
-    "dev": "ts-node-dev index.ts",
+    "dev": "ts-node-dev --files index.ts",
     "test": "jest --watchAll"
   },
   "keywords": [
