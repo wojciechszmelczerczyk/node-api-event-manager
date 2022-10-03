@@ -94,12 +94,12 @@ describe("POST /user/authenticate", () => {
 });
 
 describe("POST /user/refreshToken", () => {
-  it("when refresh token is verified, should return new access token and refresh token", async () => {
-    const newTokens = await request(app)
+  it("when refresh token is verified, should return new access token", async () => {
+    const tokens = await request(app)
       .post("/user/authenticate")
       .set("Authorization", `Bearer ${process.env.RT}`);
 
-    expect(newTokens).toBeTruthy();
+    expect(tokens).toBeTruthy();
   });
 
   it("when refresh token is invalid, should return an error message", async () => {

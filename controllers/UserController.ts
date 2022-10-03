@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
-import { decode } from "jsonwebtoken";
 import User from "../models/User";
 import { createToken } from "../token/createToken";
 
 export const register = async (req: Request, res: Response) => {
   try {
+    // empty refresh token
+    const refreshToken = "";
+
     // create new user in database
-    const newUser = await User.create(req.body);
+    const newUser = await User.create({ ...req.body, refreshToken });
 
     // response with new user
     res.json(newUser);
@@ -45,6 +47,9 @@ export const login = async (req: Request, res: Response) => {
       "1y"
     );
 
+    // store refresh token in db
+    await User.findOneAndUpdate({ email }, { refreshToken });
+
     // response with at and rt
     res.json({ accessToken, refreshToken });
   } catch (e) {
@@ -56,17 +61,17 @@ export const refreshToken = async (req: Request, res: Response) => {
   try {
     const { email, firstName, lastName } = req.user;
 
-    const newAccessToken = createToken(
+    const accessToken = createToken(
       {
         email,
         firstName,
         lastName,
       },
       process.env.SECRET,
-      "15m"
+      "15min"
     );
 
-    const newRefreshToken = createToken(
+    const refreshToken = createToken(
       {
         email,
         firstName,
@@ -76,8 +81,10 @@ export const refreshToken = async (req: Request, res: Response) => {
       "1y"
     );
 
-    // response with newt at and new rt
-    res.json({ newAccessToken, newRefreshToken });
+    // update with new refresh token
+    await User.findOneAndUpdate({ email }, { refreshToken });
+    // response with new at
+    res.json(accessToken);
   } catch (e) {
     res.status(400).send(e.message);
   }

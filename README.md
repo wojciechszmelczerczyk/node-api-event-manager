@@ -74,6 +74,11 @@ RT=
 # Arbitrary invalid refresh token for testing purposes
 INVALID_RT=
 
+# Access token secret
+AT_SECRET=
+
+# Refresh token secret
+RT_SECRET=
 
 ```
 
@@ -85,7 +90,7 @@ INVALID_RT=
 | :------------------- | :----: | :-----------: | :------------------------------------------------------- |
 | `/user`              |  POST  |       -       | Create a new user                                        |
 | `/user/authenticate` |  POST  |       -       | Authenticate user, return access token and refresh token |
-| `/user/refreshToken` |  GET   |      \*       | Return new access token                                  |
+| `/user/refreshToken` |  GET   |      \*       | Return new access token and refresh token                |
 
 ### Event:
 

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Event from "../models/Event";
 
-export const createEvent = async (req: any, res: Response) => {
+export const createEvent = async (req: Request, res: Response) => {
   const { email, firstName, lastName } = req.user;
 
   const { eventTitle, startDate, endDate } = req.body;
@@ -21,7 +21,7 @@ export const createEvent = async (req: any, res: Response) => {
   }
 };
 
-export const getEvents = async (req: any, res: Response) => {
+export const getEvents = async (req: Request, res: Response) => {
   const { email } = req.user;
 
   const events = await Event.find({ email });
