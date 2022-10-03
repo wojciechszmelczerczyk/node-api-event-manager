@@ -98,6 +98,8 @@ RT_SECRET=
 | :-------------- | :----: | :-----------: | :-------------------------------- |
 | `/event`        |  GET   |      \*       | Return all events of current user |
 | `/event/create` |  POST  |      \*       | Create a new event                |
+| `/event/:title` |  GET   |      \*       | Get event by title                |
+| `/event/:id`    | DELETE |      \*       | Delete event                      |
 
 ## JWT
 
@@ -401,6 +403,126 @@ it("when jwt correct, should return all current user events", async () => {
     .set("Authorization", `Bearer ${process.env.JWT}`);
 
   expect(events.body).toBeTruthy();
+});
+```
+
+</details>
+
+<details>
+<summary>when jwt inccorrect, should return error message</summary>
+
+```javascript
+it("when jwt inccorrect, should return error message", async () => {
+  const events = await request(app)
+    .get("/event")
+    .set("Authorization", `Bearer ${process.env.INVALID_AT}`);
+
+  expect(events.error).toBeTruthy();
+});
+```
+
+</details>
+
+<details>
+<summary>when jwt expired, should return error message</summary>
+
+```javascript
+it("when jwt expired, should return error message", async () => {
+  const events = await request(app)
+    .get("/event")
+    .set("Authorization", `Bearer ${process.env.EXPIRED_AT}`);
+
+  expect(events.error).toBeTruthy();
+});
+```
+
+</details>
+
+<br />
+
+#### `GET /event/:email`
+
+<details>
+<summary>when jwt correct, should return specific event of current user</summary>
+ 
+ ```javascript
+it("when jwt correct, should return specific event of current user", async () => {
+    const title = events[0].eventTitle;
+
+    const event = await request(app)
+      .get(`/event/${title}`)
+      .set("Authorization", `Bearer ${process.env.AT}`);
+
+    const isExist = await Event.findById(event.body._id);
+
+    expect(isExist).toBeTruthy();
+
+});
+
+````
+</details>
+
+<details>
+
+<summary>when jwt inccorrect, should return error message</summary>
+
+ ```javascript
+it("when jwt inccorrect, should return error message", async () => {
+    const title = events[0].eventTitle;
+
+    const event = await request(app)
+      .get(`/event/${title}`)
+      .set("Authorization", `Bearer ${process.env.INVALID_AT}`);
+
+    expect(event.error).toBeTruthy();
+  });
+````
+
+</details>
+
+<details>
+<summary>when jwt expired, should return error message</summary>
+
+```javascript
+it("when jwt expired, should return error message", async () => {
+  const title = events[0].eventTitle;
+
+  const event = await request(app)
+    .get(`/event/${title}`)
+    .set("Authorization", `Bearer ${process.env.EXPIRED_AT}`);
+
+  expect(event.error).toBeTruthy();
+});
+```
+
+</details>
+
+<br />
+
+#### `DELETE /event/:id`
+
+<details>
+<summary>when jwt correct and event with specified id exist, should delete event</summary>
+
+```javascript
+it("when jwt correct and event with specified id exist, should delete event", async () => {
+  // arbitary title
+  const title = events[0].eventTitle;
+
+  // find user by title
+  const event = await request(app)
+    .get(`/event/${title}`)
+    .set("Authorization", `Bearer ${process.env.AT}`);
+
+  const id = event.body._id;
+
+  // use id from previous operation and delete event
+  const res = await request(app)
+    .delete(`/event/${id}`)
+    .set("Authorization", `Bearer ${process.env.AT}`);
+
+  // 204 status check
+  expect(res.status).toBe(204);
 });
 ```
 

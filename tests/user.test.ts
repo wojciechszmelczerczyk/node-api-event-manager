@@ -94,7 +94,7 @@ describe("POST /user/authenticate", () => {
 });
 
 describe("POST /user/refreshToken", () => {
-  it("when refresh token is verified, should return new access token", async () => {
+  it("when refresh token is verified,async should return new access token", async () => {
     const tokens = await request(app)
       .post("/user/authenticate")
       .set("Authorization", `Bearer ${process.env.RT}`);

@@ -12,7 +12,7 @@ const createServer = (): Application => {
 
   app.use(
     cors({
-      origin: ["http://localhost:5000"],
+      origin: ["http://localhost:5000", "http://192.168.0.107:5000"],
       credentials: true,
     })
   );

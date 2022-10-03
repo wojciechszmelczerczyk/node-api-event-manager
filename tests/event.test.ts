@@ -65,4 +65,76 @@ describe("GET /event", () => {
 
     expect(events.body).toBeTruthy();
   });
+
+  it("when jwt inccorrect, should return error message", async () => {
+    const events = await request(app)
+      .get("/event")
+      .set("Authorization", `Bearer ${process.env.INVALID_AT}`);
+
+    expect(events.error).toBeTruthy();
+  });
+
+  it("when jwt expired, should return error message", async () => {
+    const events = await request(app)
+      .get("/event")
+      .set("Authorization", `Bearer ${process.env.EXPIRED_AT}`);
+
+    expect(events.error).toBeTruthy();
+  });
+});
+
+describe("GET /event/:title", () => {
+  it("when jwt correct, should return specific event of current user", async () => {
+    const title = events[0].eventTitle;
+
+    const event = await request(app)
+      .get(`/event/${title}`)
+      .set("Authorization", `Bearer ${process.env.AT}`);
+
+    const isExist = await Event.findById(event.body._id);
+
+    expect(isExist).toBeTruthy();
+  });
+
+  it("when jwt inccorrect, should return error message", async () => {
+    const title = events[0].eventTitle;
+
+    const event = await request(app)
+      .get(`/event/${title}`)
+      .set("Authorization", `Bearer ${process.env.INVALID_AT}`);
+
+    expect(event.error).toBeTruthy();
+  });
+
+  it("when jwt expired, should return error message", async () => {
+    const title = events[0].eventTitle;
+
+    const event = await request(app)
+      .get(`/event/${title}`)
+      .set("Authorization", `Bearer ${process.env.EXPIRED_AT}`);
+
+    expect(event.error).toBeTruthy();
+  });
+});
+
+describe("DELETE /event/:id", () => {
+  it("when jwt correct and event with specified id exist, should delete event", async () => {
+    // arbitary title
+    const title = events[0].eventTitle;
+
+    // find user by title
+    const event = await request(app)
+      .get(`/event/${title}`)
+      .set("Authorization", `Bearer ${process.env.AT}`);
+
+    const id = event.body._id;
+
+    // use id from previous operation and delete event
+    const res = await request(app)
+      .delete(`/event/${id}`)
+      .set("Authorization", `Bearer ${process.env.AT}`);
+
+    // 204 status check
+    expect(res.status).toBe(204);
+  });
 });

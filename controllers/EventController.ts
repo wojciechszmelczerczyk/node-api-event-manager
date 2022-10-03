@@ -28,3 +28,18 @@ export const getEvents = async (req: Request, res: Response) => {
 
   res.json(events);
 };
+
+export const getEvent = async (req: Request, res: Response) => {
+  const eventTitle = req.params.title;
+  const email = req.user.email;
+  const event = await Event.findOne({ eventTitle, email });
+
+  res.json(event);
+};
+
+export const deleteEvent = async (req: Request, res: Response) => {
+  const id = req.params.id;
+
+  await Event.findByIdAndDelete(id);
+  res.status(204);
+};
