@@ -24,7 +24,7 @@ describe("POST /user", () => {
     const userFromDb = await User.findById(newUser.body._id);
 
     // if user credentials are correct, shouldn't be any error response back
-    expect(newUser.error).not.toBeTruthy();
+    expect(newUser.error).toBeFalsy();
 
     // user should exist
     expect(userFromDb).toBeTruthy();
