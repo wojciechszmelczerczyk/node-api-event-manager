@@ -110,6 +110,7 @@ When user login, api return access token and refresh token
 <img src="./Untitled Diagram.drawio.svg" />
 
 Every protected api endpoint include middleware which verify token.
+
 Access token is intercepted from local storage and used in auth header.
 
 <img src="./getProtectedResource.svg" />
