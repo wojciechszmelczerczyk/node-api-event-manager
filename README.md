@@ -105,6 +105,10 @@ RT_SECRET=
 
 ### Token implementation
 
+When user login, api return access token and refresh token
+
+<img src="./Untitled Diagram.drawio.svg" />
+
 ### Create new token helper function
 
 #### Sign token with user credentials ie. first name, last name and email.
