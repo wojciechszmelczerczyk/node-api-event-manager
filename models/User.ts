@@ -7,7 +7,6 @@ interface IUser {
   lastName: string;
   email: string;
   password: string;
-  refreshToken: string;
 }
 
 interface UserModel extends Model<IUser> {
@@ -34,10 +33,6 @@ const userSchema = new Schema<IUser, UserModel>({
     type: String,
     required: [true, "Please enter a password"],
     minlength: [6, "Password is too short. Minimum length is 6 characters"],
-  },
-
-  refreshToken: {
-    type: String,
   },
 });
 

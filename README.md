@@ -22,7 +22,7 @@ REST API for Event Managment App
 ## Requirements
 
 - install `node`
-- setup `mongodb`
+- install `mongodb`
 
 ## Usage
 

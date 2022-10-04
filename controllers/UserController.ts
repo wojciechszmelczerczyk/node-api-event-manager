@@ -4,11 +4,8 @@ import { createToken } from "../token/createToken";
 
 export const register = async (req: Request, res: Response) => {
   try {
-    // empty refresh token
-    const refreshToken = "";
-
     // create new user in database
-    const newUser = await User.create({ ...req.body, refreshToken });
+    const newUser = await User.create(req.body);
 
     // response with new user
     res.json(newUser);
@@ -81,10 +78,8 @@ export const refreshToken = async (req: Request, res: Response) => {
       "1y"
     );
 
-    // update with new refresh token
-    await User.findOneAndUpdate({ email }, { refreshToken });
     // response with new at
-    res.json(accessToken);
+    res.json({ accessToken, refreshToken });
   } catch (e) {
     res.status(400).send(e.message);
   }
