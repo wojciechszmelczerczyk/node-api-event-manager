@@ -10,6 +10,7 @@ REST API for Event Managment App
 - [Requirements](#requirements)
 - [Usage](#usage)
 - [API endpoints](#api-endpoints)
+- [DB](#db)
 - [JWT](#jwt)
 - [Tests](#tests)
 
@@ -59,7 +60,7 @@ DB_URI=
 # Port
 PORT=
 
-# Arbitrary access token for testing purposes
+# Arbitrary access token for testing purposes (no expiration time)
 AT=
 
 # Arbitrary invalid access token for testing purposes
@@ -68,17 +69,14 @@ INVALID_AT=
 # Arbitrary expired access token for testing purposes
 EXPIRED_AT=
 
-# Arbitrary refresh token for testing purposes
+# Arbitrary refresh token for testing purposes (no expiration time)
 RT=
 
 # Arbitrary invalid refresh token for testing purposes
 INVALID_RT=
 
-# Access token secret
-AT_SECRET=
-
-# Refresh token secret
-RT_SECRET=
+# secret
+SECRET=
 
 ```
 
@@ -101,20 +99,31 @@ RT_SECRET=
 | `/event/:title` |  GET   |      \*       | Get event by title                |
 | `/event/:id`    | DELETE |      \*       | Delete event                      |
 
+## DB
+
+Database contains of User and Event collections.
+
+### User
+
+[![](https://mermaid.ink/img/pako:eNptj70KwzAMhF_FaM4TeG7XLqGbF2ErqWlsB1mmlJB3r8jPEqpF4uPuOC3gSyCw4Ces9RZxZEwuG52NmGclXnZgTC8c82iGyFUemOjC1fAPU8I4Xdis2Z_CYcfrtk7JPtBBIlZr0HZbAwfyIk0Hq2dAfjtweVVdmwMK3UOUwmAHnCp1gE1K_80erHCjU3R8eKjWH1d7Ub8)](https://mermaid.live/edit#pako:eNptj70KwzAMhF_FaM4TeG7XLqGbF2ErqWlsB1mmlJB3r8jPEqpF4uPuOC3gSyCw4Ces9RZxZEwuG52NmGclXnZgTC8c82iGyFUemOjC1fAPU8I4Xdis2Z_CYcfrtk7JPtBBIlZr0HZbAwfyIk0Hq2dAfjtweVVdmwMK3UOUwmAHnCp1gE1K_80erHCjU3R8eKjWH1d7Ub8)
+
+### Event
+
+[![](https://mermaid.ink/img/pako:eNptkDsOgzAMhq8SeeYEmWHtQscsFjE0KgmVYypViLvXvFoV1Yutz7-fEzSDJ7DQ9JhzGbBjjC4ZtZWY6klJpo0YUwuH1Jk2cJYLRjpxrfiHKWLoz2zpew3Sf8QlCpksyLJEP5SS_7J5dUd-MyggEusYr6es2zqQG-kmYDX0yHcHLs2qGx9eW1U-yMBgW-wzFYCjDPUrNWCFRzpE-zt21fwGxZhfhA)](https://mermaid.live/edit#pako:eNptkDsOgzAMhq8SeeYEmWHtQscsFjE0KgmVYypViLvXvFoV1Yutz7-fEzSDJ7DQ9JhzGbBjjC4ZtZWY6klJpo0YUwuH1Jk2cJYLRjpxrfiHKWLoz2zpew3Sf8QlCpksyLJEP5SS_7J5dUd-MyggEusYr6es2zqQG-kmYDX0yHcHLs2qGx9eW1U-yMBgW-wzFYCjDPUrNWCFRzpE-zt21fwGxZhfhA)
+
 ## JWT
 
 ### Token implementation
 
-When user login, api return access token and refresh token
+When user login, api return access token and refresh token.
 
-<img src="./Untitled Diagram.drawio.svg" />
+<img src="./login.svg" />
 
 Every protected api endpoint include middleware which verify token.
 
 Access token is intercepted from local storage and used in auth header.
 
 <img src="./getProtectedResource.svg" />
-
 
 ### Create new token helper function
 
@@ -340,13 +349,13 @@ it("when refresh token doesn't exist, should return an error message", async () 
 it("when jwt is verified and event data payload is correct, should create new event", async () => {
     const newEvent = await request(app)
       .post("/event/create")
-      .set("Authorization", `Bearer ${process.env.JWT}`)
+      .set("Authorization", `Bearer ${process.env.AT}`)
       .send(events[0]);
 
     // event should exist
-    const eventExist = await Event.findById(newEvent.body.event);
+    const eventFromDb = await Event.findById(newEvent.body.event);
 
-    expect(eventExist).toBeTruthy();
+    expect(eventFromDb).toBeTruthy();
 
 });
 
@@ -357,15 +366,14 @@ it("when jwt is verified and event data payload is correct, should create new ev
 <summary>when jwt is verified and event data payload is incorrect, should return error message</summary>
 
  ```javascript
-it("when jwt is verified and event data payload is incorrect, should return error message", async () => {
+ it("when jwt is verified and event data payload is incorrect, should return error message", async () => {
     const newEvent = await request(app)
       .post("/event/create")
-      .set("Authorization", `Bearer ${process.env.JWT}`)
+      .set("Authorization", `Bearer ${process.env.AT}`)
       .send(events[1]);
 
     expect(newEvent.error).toBeTruthy();
   });
-````
 
 </details>
 
@@ -423,13 +431,13 @@ it("when jwt correct, should return all current user events", async () => {
 <summary>when jwt inccorrect, should return error message</summary>
 
 ```javascript
-it("when jwt inccorrect, should return error message", async () => {
-  const events = await request(app)
-    .get("/event")
-    .set("Authorization", `Bearer ${process.env.INVALID_AT}`);
+ it("when jwt inccorrect, should return error message", async () => {
+    const events = await request(app)
+      .get("/event")
+      .set("Authorization", `Bearer ${process.env.INVALID_AT}`);
 
-  expect(events.error).toBeTruthy();
-});
+    expect(events.text).toBe("jwt malformed");
+  });
 ```
 
 </details>
@@ -439,23 +447,23 @@ it("when jwt inccorrect, should return error message", async () => {
 
 ```javascript
 it("when jwt expired, should return error message", async () => {
-  const events = await request(app)
-    .get("/event")
-    .set("Authorization", `Bearer ${process.env.EXPIRED_AT}`);
+    const events = await request(app)
+      .get("/event")
+      .set("Authorization", `Bearer ${process.env.EXPIRED_AT}`);
 
-  expect(events.error).toBeTruthy();
-});
+    expect(events.text).toBe("jwt expired");
+  });
 ```
 
 </details>
 
 <br />
 
-#### `GET /event/:email`
+#### `GET /event/:title`
 
 <details>
 <summary>when jwt correct, should return specific event of current user</summary>
- 
+
  ```javascript
 it("when jwt correct, should return specific event of current user", async () => {
     const title = events[0].eventTitle;
@@ -471,23 +479,24 @@ it("when jwt correct, should return specific event of current user", async () =>
 });
 
 ````
+
 </details>
 
 <details>
 
 <summary>when jwt inccorrect, should return error message</summary>
 
- ```javascript
+```javascript
 it("when jwt inccorrect, should return error message", async () => {
-    const title = events[0].eventTitle;
+  const title = events[0].eventTitle;
 
-    const event = await request(app)
-      .get(`/event/${title}`)
-      .set("Authorization", `Bearer ${process.env.INVALID_AT}`);
+  const event = await request(app)
+    .get(`/event/${title}`)
+    .set("Authorization", `Bearer ${process.env.INVALID_AT}`);
 
-    expect(event.error).toBeTruthy();
-  });
-````
+  expect(event.text).toBe("jwt malformed");
+});
+```
 
 </details>
 
@@ -502,38 +511,7 @@ it("when jwt expired, should return error message", async () => {
     .get(`/event/${title}`)
     .set("Authorization", `Bearer ${process.env.EXPIRED_AT}`);
 
-  expect(event.error).toBeTruthy();
-});
-```
-
-</details>
-
-<br />
-
-#### `DELETE /event/:id`
-
-<details>
-<summary>when jwt correct and event with specified id exist, should delete event</summary>
-
-```javascript
-it("when jwt correct and event with specified id exist, should delete event", async () => {
-  // arbitary title
-  const title = events[0].eventTitle;
-
-  // find user by title
-  const event = await request(app)
-    .get(`/event/${title}`)
-    .set("Authorization", `Bearer ${process.env.AT}`);
-
-  const id = event.body._id;
-
-  // use id from previous operation and delete event
-  const res = await request(app)
-    .delete(`/event/${id}`)
-    .set("Authorization", `Bearer ${process.env.AT}`);
-
-  // 204 status check
-  expect(res.status).toBe(204);
+  expect(event.text).toBe("jwt expired");
 });
 ```
 
