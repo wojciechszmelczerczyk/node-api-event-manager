@@ -65,7 +65,7 @@ export const refreshToken = async (req: Request, res: Response) => {
         lastName,
       },
       process.env.SECRET,
-      "15min"
+      "15m"
     );
 
     const refreshToken = createToken(
