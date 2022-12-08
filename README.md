@@ -84,20 +84,20 @@ SECRET=
 
 ### User:
 
-| Endpoint             | Method | Authenticated | Action                                                   |
-| :------------------- | :----: | :-----------: | :------------------------------------------------------- |
-| `/user`              |  POST  |       -       | Create a new user                                        |
-| `/user/authenticate` |  POST  |       -       | Authenticate user, return access token and refresh token |
-| `/user/refreshToken` |  GET   |      \*       | Return new access token and refresh token                |
+| Method |                      Endpoint                       |
+| :----- | :-------------------------------------------------: |
+| POST   |         [`/user`](./docs/user/register.md)          |
+| POST   |    [`/user/authenticate`](./docs/user/login.md)     |
+| GET    | [`/user/refreshToken`](./docs/user/refreshToken.md) |
 
 ### Event:
 
-| Endpoint        | Method | Authenticated | Action                            |
-| :-------------- | :----: | :-----------: | :-------------------------------- |
-| `/event`        |  GET   |      \*       | Return all events of current user |
-| `/event/create` |  POST  |      \*       | Create a new event                |
-| `/event/:title` |  GET   |      \*       | Get event by title                |
-| `/event/:id`    | DELETE |      \*       | Delete event                      |
+| Method |                  Endpoint                  |
+| :----- | :----------------------------------------: |
+| GET    |      [`/event`](./docs/event/get.md)       |
+| POST   |  [`/event/create`](./docs/event/post.md)   |
+| GET    | [`/event/:title`](./docs/event/getById.md) |
+| DELETE |   [`/event/:id`](./docs/event/delete.md)   |
 
 ## DB
 
