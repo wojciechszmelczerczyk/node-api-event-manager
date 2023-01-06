@@ -84,11 +84,11 @@ SECRET=
 
 ### User:
 
-| Method |                    Endpoint                    |
-| :----: | :--------------------------------------------: |
-|  POST  |          [/user](./docs/user/post.md)          |
-|  POST  | [/user/authenticate](./docs/user/post-auth.md) |
-|  GET   |    [/user/refreshToken](./docs/user/get.md)    |
+| Method |                     Endpoint                     |
+| :----: | :----------------------------------------------: |
+|  POST  |          [`/user`](./docs/user/post.md)          |
+|  POST  | [`/user/authenticate`](./docs/user/post-auth.md) |
+|  GET   |    [`/user/refreshToken`](./docs/user/get.md)    |
 
 ### Event:
 
