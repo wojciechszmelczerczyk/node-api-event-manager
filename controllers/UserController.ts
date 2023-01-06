@@ -61,6 +61,8 @@ export const refreshToken = async (req: Request, res: Response) => {
         firstName,
         lastName,
       },
+      process.env.SECRET,
+      "15m"
       process.env.AT_SECRET,
       "15s"
     );

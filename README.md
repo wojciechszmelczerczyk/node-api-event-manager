@@ -92,12 +92,12 @@ SECRET=
 
 ### Event:
 
-| Endpoint        | Method | Authenticated | Action                            |
-| :-------------- | :----: | :-----------: | :-------------------------------- |
-| `/event`        |  GET   |      \*       | Return all events of current user |
-| `/event/create` |  POST  |      \*       | Create a new event                |
-| `/event/:title` |  GET   |      \*       | Get event by title                |
-| `/event/:id`    | DELETE |      \*       | Delete event                      |
+| Method |                  Endpoint                  |
+| :----- | :----------------------------------------: |
+| GET    |      [`/event`](./docs/event/get.md)       |
+| POST   |  [`/event/create`](./docs/event/post.md)   |
+| GET    | [`/event/:title`](./docs/event/getById.md) |
+| DELETE |   [`/event/:id`](./docs/event/delete.md)   |
 
 ## DB
 
