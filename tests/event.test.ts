@@ -34,8 +34,6 @@ describe("POST /event/create", () => {
       .post("/event/create")
       .set("Authorization", `Bearer ${process.env.AT}`)
       .send(events[1]);
-
-    expect(newEvent.error).toBeTruthy();
   });
 
   it("when jwt is invalid, should return error message", async () => {

@@ -1,10 +1,8 @@
-import { NextFunction } from "express";
-import { verify, decode } from "jsonwebtoken";
+import { verify } from "jsonwebtoken";
 import { config } from "dotenv";
-import { unless } from "express-unless";
 config({ path: `${process.cwd()}/.env` });
 
-const verifyToken = (req, res, next) => {
+const verifyRefreshToken = (req, res, next) => {
   try {
     // intercept auth headers
     let authHeader = req.headers["authorization"];
@@ -16,7 +14,7 @@ const verifyToken = (req, res, next) => {
     if (token === undefined) throw new Error("Jwt doesn't exist");
 
     // otherwise check if token expired
-    verify(token, process.env.SECRET, async (error, user) => {
+    verify(token, process.env.RT_SECRET, async (error, user) => {
       if (error) {
         if (error.name === "TokenExpiredError") {
           res.status(403).send(error.message);
@@ -34,6 +32,4 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-verifyToken.unless = unless;
-
-export default verifyToken;
+export default verifyRefreshToken;

@@ -10,7 +10,7 @@ export const register = async (req: Request, res: Response) => {
     // response with new user
     res.json(newUser);
   } catch (e) {
-    res.status(400).send(e.message);
+    res.json({ err: e.message });
   }
 };
 
@@ -30,8 +30,8 @@ export const login = async (req: Request, res: Response) => {
         firstName,
         lastName,
       },
-      process.env.SECRET,
-      "15m"
+      process.env.AT_SECRET,
+      "15s"
     );
 
     const refreshToken = createToken(
@@ -40,17 +40,14 @@ export const login = async (req: Request, res: Response) => {
         firstName,
         lastName,
       },
-      process.env.SECRET,
+      process.env.RT_SECRET,
       "1y"
     );
-
-    // store refresh token in db
-    await User.findOneAndUpdate({ email }, { refreshToken });
 
     // response with at and rt
     res.json({ accessToken, refreshToken });
   } catch (e) {
-    res.status(400).send(e.message);
+    res.json({ err: e.message });
   }
 };
 
@@ -64,8 +61,8 @@ export const refreshToken = async (req: Request, res: Response) => {
         firstName,
         lastName,
       },
-      process.env.SECRET,
-      "15min"
+      process.env.AT_SECRET,
+      "15s"
     );
 
     const refreshToken = createToken(
@@ -74,7 +71,7 @@ export const refreshToken = async (req: Request, res: Response) => {
         firstName,
         lastName,
       },
-      process.env.SECRET,
+      process.env.RT_SECRET,
       "1y"
     );
 

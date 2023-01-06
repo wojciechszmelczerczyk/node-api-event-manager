@@ -17,7 +17,7 @@ export const createEvent = async (req: Request, res: Response) => {
 
     res.json({ event });
   } catch (e) {
-    res.status(400).send(e.message);
+    res.json({ err: e.message });
   }
 };
 

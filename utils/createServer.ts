@@ -3,7 +3,7 @@ import eventRouter from "../routes/event";
 
 import cors from "cors";
 import express, { Application } from "express";
-import verifyToken from "../middleware/verifyToken";
+import verifyAccessToken from "../middleware/verifyAccessToken";
 
 const createServer = (): Application => {
   const app: Application = express();
@@ -18,8 +18,12 @@ const createServer = (): Application => {
   );
 
   app.use(
-    verifyToken.unless({
-      path: [{ url: "/user", method: "POST" }, "/user/authenticate"],
+    verifyAccessToken.unless({
+      path: [
+        { url: "/user", method: "POST" },
+        "/user/authenticate",
+        "/user/refreshToken",
+      ],
     })
   );
 

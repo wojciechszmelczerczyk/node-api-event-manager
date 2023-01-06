@@ -32,24 +32,21 @@ describe("POST /user", () => {
 
   it("when email doesn't match email regex, should return an error message", async () => {
     const errData = await request(app).post("/user").send(users[1]);
-    expect(errData.error).toBeTruthy();
-    expect(errData.text).toBe(
+    expect(errData.body.err).toBe(
       "user validation failed: email: Please enter a valid email"
     );
   });
 
   it("when no email provided, should return an error message", async () => {
     const errData = await request(app).post("/user").send(users[2]);
-    expect(errData.error).toBeTruthy();
-    expect(errData.text).toBe(
+    expect(errData.body.err).toBe(
       "user validation failed: email: Please enter an email"
     );
   });
 
   it("when provided password is shorter than 6, should return an error message", async () => {
     const errData = await request(app).post("/user").send(users[3]);
-    expect(errData.error).toBeTruthy();
-    expect(errData.text).toBe(
+    expect(errData.body.err).toBe(
       "user validation failed: password: Password is too short. Minimum length is 6 characters"
     );
   });
@@ -68,8 +65,7 @@ describe("POST /user/authenticate", () => {
       .post("/user/authenticate")
       .send(users[1]);
 
-    expect(errData.error).toBeTruthy();
-    expect(errData.text).toBe(
+    expect(errData.body.err).toBe(
       "Provide correct email. User with this email doesn't exist"
     );
   });
@@ -79,8 +75,7 @@ describe("POST /user/authenticate", () => {
       .post("/user/authenticate")
       .send(users[2]);
 
-    expect(errData.error).toBeTruthy();
-    expect(errData.text).toBe("Please enter an email");
+    expect(errData.body.err).toBe("Please enter an email");
   });
 
   it("when provided password is incorrect, should return an error message", async () => {
@@ -88,8 +83,9 @@ describe("POST /user/authenticate", () => {
       .post("/user/authenticate")
       .send(users[3]);
 
-    expect(errData.error).toBeTruthy();
-    expect(errData.text).toBe("Provide correct password. Password incorrect");
+    expect(errData.body.err).toBe(
+      "Provide correct password. Password incorrect"
+    );
   });
 });
 
