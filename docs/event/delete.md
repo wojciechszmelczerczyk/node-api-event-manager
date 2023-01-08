@@ -16,7 +16,7 @@ Delete event of currently authorized user.
 
 Code: `204 No content`
 
-Condition: If note with provided correctly id exists.
+Condition: If event with provided correctly id exists.
 
 ### Context example
 

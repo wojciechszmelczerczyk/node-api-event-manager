@@ -16,16 +16,17 @@ Get event of currently authorized user by title.
 
 Code: `200 OK`
 
-Condition: If note with provided correctly id exists.
+Condition: If event with provided title exists.
 
 ```json
 {
   "__v": 0,
-  "_id": "63723e9cb7a6c7b6039003fa",
-  "content": "some content",
-  "createdAt": "2022-11-14T13:11:56.672Z",
-  "title": "title",
-  "updatedAt": "2022-11-14T13:11:56.672Z",
-  "user_id": "63723da6b7a6c7b6039003f5"
+  "_id": "63bb143be1716d34afcec916",
+  "email": "wnowak@gmail.com",
+  "endDate": "2013-02-02T00:00:00.000Z",
+  "eventTitle": "jogging",
+  "firstName": "Wojciech",
+  "lastName": "Nowak",
+  "startDate": "2012-02-01T00:00:00.000Z"
 }
 ```
