@@ -31,7 +31,7 @@ export const login = async (req: Request, res: Response) => {
         lastName,
       },
       process.env.AT_SECRET,
-      "15s"
+      "15m"
     );
 
     const refreshToken = createToken(

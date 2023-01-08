@@ -7,9 +7,7 @@ import {
 } from "../controllers/EventController";
 const router: Router = Router();
 
-router.get("/", getEvents);
-
-router.post("/create", createEvent);
+router.route("/").get(getEvents).post(createEvent);
 
 router.get("/:title", getEvent);
 
